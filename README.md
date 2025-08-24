@@ -1,5 +1,6 @@
 ## 📊 Streamify Pipeline Architecture
-mermaid
+
+```mermaid
 flowchart TD
 
     %% ========== Sources ==========
