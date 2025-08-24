@@ -32,10 +32,12 @@ flowchart TD
     Validation -->|Invalid| DLQ["❌ Dead Letter Queue"]
 
     %% ========== Enrichment Layer ==========
-    Topic --> Enrichment["Enrichment Lambda\n(Normalize + Join Metadata)"]
+    Topic --> Normalize["Normalize Movie Lambda"]
+    Normalize --> Merge["merge-movie-translations-lambda"]
+    Merge --> MapGenre["map-genre-names-lambda"]
 
     %% ========== Load Layer ==========
-    Enrichment --> Load["Load Lambda"]
+    MapGenre --> Load["Load Lambda"]
 
     %% ========== Storage ==========
     subgraph Storage["🗄️ Storage"]
@@ -56,18 +58,18 @@ flowchart TD
     Mongo --> Catalog
     ES --> Search
 
-    %% ========== Client ==========
-    subgraph Client["📱 Client"]
-        Web["Web UI"]
-        Mobile["Mobile App"]
-    end
-
     Catalog --> Web
     Catalog --> Mobile
     Search --> Web
     Search --> Mobile
     UserAPI --> Web
     UserAPI --> Mobile
+
+    %% ========== Client ==========
+    subgraph Client["📱 Client"]
+        Web["Web UI"]
+        Mobile["Mobile App"]
+    end
 
     %% ========== Optional Streaming ==========
     subgraph Streaming["🎥 Media Pipeline (Optional)"]
